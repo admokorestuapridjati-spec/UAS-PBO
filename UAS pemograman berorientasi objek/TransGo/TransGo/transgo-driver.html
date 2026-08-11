@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TransGo — Driver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="transgo-style.css">
+</head>
+<body>
+
+<div id="toast-stack"></div>
+
+<div class="app-shell">
+  <!-- ================= SIDEBAR NAV ================= -->
+  <nav class="transit-nav">
+    <div class="brand"><span class="dot"></span>Trans<span style="color:var(--route)">Go</span></div>
+    <div class="portal-label">🟢 Portal Driver</div>
+    <div id="mode-badge" class="mode-badge-wrap"></div>
+    <ul>
+      <li class="line-track"></li>
+      <li class="stop active" data-view="home" onclick="nav('home')">
+        <span class="stop-marker"></span> Beranda
+      </li>
+      <li class="stop" data-view="kendaraan" onclick="nav('kendaraan')">
+        <span class="stop-marker"></span> Armada
+      </li>
+      <li class="stop" data-view="dashboard" onclick="nav('dashboard')">
+        <span class="stop-marker"></span> Dashboard
+      </li>
+      <li class="stop" data-view="riwayat" onclick="nav('riwayat')">
+        <span class="stop-marker"></span> Riwayat
+      </li>
+    </ul>
+
+    <div class="nav-footer" id="nav-footer"></div>
+  </nav>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="main">
+
+    <!-- ---------- HOME ---------- -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <span class="eyebrow">Portal Mitra Pengemudi</span>
+        <h1>Fokus nyetir, <span>biar TransGo yang urus sisanya.</span></h1>
+        <p></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="nav('register')" id="hero-cta-primary">Daftar Gratis</button>
+          <button class="btn btn-outline" onclick="nav('login')" id="hero-cta-secondary">Masuk</button>
+        </div>
+        <svg class="route-anim" viewBox="0 0 600 70" preserveAspectRatio="none">
+          <path class="path" d="M20,50 C 150,10 250,10 300,35 S 450,60 580,20"/>
+          <circle class="stop-a" cx="20" cy="50" r="5"/>
+          <circle class="stop-b" cx="580" cy="20" r="5"/>
+          <circle class="traveler" r="6">
+            <animateMotion dur="4s" repeatCount="indefinite"
+              path="M20,50 C 150,10 250,10 300,35 S 450,60 580,20"/>
+          </circle>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- REGISTER ---------- -->
+    <section class="view" id="view-register">
+      <div class="card card-narrow">
+        <h2 style="margin-bottom:6px;">Daftar sebagai Pengemudi</h2>
+        <form onsubmit="handleRegister(event)">
+          <div class="field"><label>Nama Lengkap</label><input type="text" id="reg-nama" required placeholder="Nama Anda"></div>
+          <div class="field"><label>Email</label><input type="email" id="reg-email" required placeholder="email@contoh.com"></div>
+          <div class="field"><label>Password</label><input type="password" id="reg-password" required minlength="4" placeholder="Minimal 4 karakter"></div>
+          <div class="field" id="reg-jenis-group">
+            <label>Jenis Kendaraan</label>
+            <select id="reg-jenis"><option>Motor</option><option>Mobil</option><option>Mobil Premium</option></select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Daftar sebagai Pengemudi</button>
+        </form>
+        <p class="switch-line">Sudah punya akun? <a href="#" onclick="nav('login');return false;">Masuk di sini</a></p>
+      </div>
+    </section>
+
+    <!-- ---------- LOGIN ---------- -->
+    <section class="view" id="view-login">
+      <div class="card card-narrow">
+        <h2 style="margin-bottom:18px;">Masuk sebagai Pengemudi</h2>
+        <form onsubmit="handleLogin(event)">
+          <div class="field"><label>Email</label><input type="email" id="login-email" required placeholder="email@contoh.com"></div>
+          <div class="field"><label>Password</label><input type="password" id="login-password" required placeholder="Password Anda"></div>
+          <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+        </form>
+        <p class="switch-line">Belum punya akun? <a href="#" onclick="nav('register');return false;">Daftar di sini</a></p>
+      </div>
+    </section>
+
+    <!-- ---------- KENDARAAN ---------- -->
+    <section class="view" id="view-kendaraan">
+      <span class="eyebrow">Armada</span>
+      <h2 class="page-title">Daftar Kendaraan</h2>
+      <p class="page-sub">Status ketersediaan diperbarui secara real-time setiap ada pesanan baru.</p>
+      <div class="vgrid" id="vehicle-grid"></div>
+    </section>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view" id="view-dashboard">
+      <span class="eyebrow">Ringkasan</span>
+      <h2 class="page-title">Dashboard</h2>
+      <div class="profile-bar" id="profile-bar"></div>
+      <div class="section-title-row">
+        <h3 class="section-title" id="dashboard-list-title">Pesanan Masuk — Perlu Ditangani</h3>
+        <button class="btn btn-outline btn-sm" onclick="refreshDashboardManual()" type="button">🔄 Refresh</button>
+      </div>
+      <div id="dashboard-content">
+        <p class="empty">Belum ada pesanan masuk.</p>
+      </div>
+    </section>
+
+    <!-- ---------- RIWAYAT ---------- -->
+    <section class="view" id="view-riwayat">
+      <span class="eyebrow">Histori</span>
+      <h2 class="page-title">Riwayat Perjalanan</h2>
+      <div id="riwayat-content"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const PAGE_ROLE = "pengemudi"; // WAJIB didefinisikan sebelum file-file di bawah dimuat
+</script>
+<!-- 4 file OOP, urutannya penting: abstraksi dulu (kelas dasar), baru
+     enkapsulasi, pewarisan (subclass-nya), lalu polimorfisme (pemakaian
+     method yang di-override). transgo-app.js dimuat PALING TERAKHIR
+     karena dia memakai semua class/fungsi di atas. -->
+<script src="oop-01-abstraksi.js"></script>
+<script src="oop-02-enkapsulasi.js"></script>
+<script src="oop-03-pewarisan.js"></script>
+<script src="oop-04-polimorfisme.js"></script>
+<script src="transgo-app.js"></script>
+<script>
+  initTransGo();
+</script>
+</body>
+</html>

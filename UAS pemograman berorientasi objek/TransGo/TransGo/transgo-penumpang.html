@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TransGo — Penumpang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="transgo-style.css">
+</head>
+<body>
+
+<div id="toast-stack"></div>
+
+<div class="app-shell">
+  <!-- ================= SIDEBAR NAV ================= -->
+  <nav class="transit-nav">
+    <div class="brand"><span class="dot"></span>Trans<span style="color:var(--route)">Go</span></div>
+    <div class="portal-label">🔵 Portal Penumpang</div>
+    <div id="mode-badge" class="mode-badge-wrap"></div>
+    <ul>
+      <li class="line-track"></li>
+      <li class="stop active" data-view="home" onclick="nav('home')">
+        <span class="stop-marker"></span> Beranda
+      </li>
+      <li class="stop" data-view="kendaraan" onclick="nav('kendaraan')">
+        <span class="stop-marker"></span> Armada
+      </li>
+      <li class="stop" data-view="pesan" onclick="nav('pesan')">
+        <span class="stop-marker"></span> Pesan
+      </li>
+      <li class="stop" data-view="dashboard" onclick="nav('dashboard')">
+        <span class="stop-marker"></span> Dashboard
+      </li>
+      <li class="stop" data-view="riwayat" onclick="nav('riwayat')">
+        <span class="stop-marker"></span> Riwayat
+      </li>
+    </ul>
+
+    <div class="nav-footer" id="nav-footer"></div>
+  </nav>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="main">
+
+    <!-- ---------- HOME ---------- -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <span class="eyebrow">Sistem Pemesanan Transportasi Online</span>
+        <h1>Tinggal buka browser, <span>tumpanganmu langsung siap.</span></h1>
+        <p>Nggak perlu install apa-apa — daftar dan pesan kendaraan cuma dalam hitungan detik. Cukup masukkan titik jemput &amp; tujuan, biar TransGo yang hitungkan jarak dan tarifnya buat kamu secara otomatis.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="nav('register')" id="hero-cta-primary">Daftar Gratis</button>
+          <button class="btn btn-outline" onclick="nav('login')" id="hero-cta-secondary">Masuk</button>
+        </div>
+        <svg class="route-anim" viewBox="0 0 600 70" preserveAspectRatio="none">
+          <path class="path" d="M20,50 C 150,10 250,10 300,35 S 450,60 580,20"/>
+          <circle class="stop-a" cx="20" cy="50" r="5"/>
+          <circle class="stop-b" cx="580" cy="20" r="5"/>
+          <circle class="traveler" r="6">
+            <animateMotion dur="4s" repeatCount="indefinite"
+              path="M20,50 C 150,10 250,10 300,35 S 450,60 580,20"/>
+          </circle>
+        </svg>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature"><div class="num">01</div><h3>Beragam Armada</h3><p>Motor, Mobil, hingga Mobil Premium sesuai kebutuhanmu.</p></div>
+        <div class="feature"><div class="num">02</div><h3>Tarif Transparan</h3><p>Dihitung otomatis dari jarak tempuh sesungguhnya &amp; jenis kendaraan.</p></div>
+        <div class="feature"><div class="num">03</div><h3>Status Real-time</h3><p>Pantau perjalanan dari menunggu konfirmasi sampai selesai.</p></div>
+        <div class="feature"><div class="num">04</div><h3>Riwayat Rapi</h3><p>Semua transaksi tersimpan dan mudah ditelusuri kembali.</p></div>
+      </div>
+    </section>
+
+    <!-- ---------- REGISTER ---------- -->
+    <section class="view" id="view-register">
+      <div class="card card-narrow">
+        <h2 style="margin-bottom:6px;">Buat Akun Penumpang</h2>
+        <form onsubmit="handleRegister(event)">
+          <div class="field"><label>Nama Lengkap</label><input type="text" id="reg-nama" required placeholder="Nama Anda"></div>
+          <div class="field"><label>Email</label><input type="email" id="reg-email" required placeholder="email@contoh.com"></div>
+          <div class="field"><label>Password</label><input type="password" id="reg-password" required minlength="4" placeholder="Minimal 4 karakter"></div>
+          <button type="submit" class="btn btn-primary btn-block">Daftar sebagai Penumpang</button>
+        </form>
+        <p class="switch-line">Sudah punya akun? <a href="#" onclick="nav('login');return false;">Masuk di sini</a></p>
+      </div>
+    </section>
+
+    <!-- ---------- LOGIN ---------- -->
+    <section class="view" id="view-login">
+      <div class="card card-narrow">
+        <h2 style="margin-bottom:18px;">Masuk sebagai Penumpang</h2>
+        <form onsubmit="handleLogin(event)">
+          <div class="field"><label>Email</label><input type="email" id="login-email" required placeholder="email@contoh.com"></div>
+          <div class="field"><label>Password</label><input type="password" id="login-password" required placeholder="Password Anda"></div>
+          <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+        </form>
+        <p class="switch-line">Belum punya akun? <a href="#" onclick="nav('register');return false;">Daftar di sini</a></p>
+      </div>
+    </section>
+
+    <!-- ---------- KENDARAAN ---------- -->
+    <section class="view" id="view-kendaraan">
+      <span class="eyebrow">Armada</span>
+      <h2 class="page-title">Daftar Kendaraan</h2>
+      <p class="page-sub">Status ketersediaan diperbarui secara real-time setiap ada pesanan baru.</p>
+      <div class="vgrid" id="vehicle-grid"></div>
+    </section>
+
+    <!-- ---------- PESAN ---------- -->
+    <section class="view" id="view-pesan">
+      <span class="eyebrow">Pemesanan</span>
+      <h2 class="page-title">Pesan Perjalanan</h2>
+      <p class="page-sub">Isi lokasi jemput &amp; tujuan — jarak dan tarif dihitung otomatis dari peta.</p>
+      <div class="booking-grid">
+        <form class="card" onsubmit="handlePesan(event)">
+          <div class="field"><label>Lokasi Penjemputan</label><input type="text" id="pesan-jemput" required placeholder="Contoh: Alun-Alun Ponorogo"></div>
+          <div class="field"><label>Lokasi Tujuan</label><input type="text" id="pesan-tujuan" required placeholder="Contoh: Terminal Seloaji Ponorogo"></div>
+
+          <div class="field">
+            <button type="button" id="btn-hitung-jarak" class="btn btn-outline btn-block" onclick="hitungJarakOtomatis()">📍 Hitung Jarak Otomatis</button>
+            <div id="jarak-result" class="jarak-result"></div>
+            <div class="field hidden" id="jarak-manual-group">
+              <label>Jarak tidak ketemu? Isi manual (km)</label>
+              <div style="display:flex;gap:8px;">
+                <input type="number" id="pesan-jarak-manual" min="0.1" step="0.1" placeholder="Contoh: 8.5">
+                <button type="button" class="btn btn-transit btn-sm" onclick="pakaiJarakManual()">Pakai</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Pilih Kendaraan</label>
+            <select id="pesan-kendaraan" required disabled></select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Pesan Sekarang</button>
+          <p class="osm-attrib">Perhitungan jarak pakai peta gratis dari OpenStreetMap &amp; OSRM — butuh koneksi internet.</p>
+        </form>
+        <div class="card">
+          <h3 style="font-size:1rem;margin-bottom:10px;">Kendaraan Tersedia</h3>
+          <div id="pesan-mini-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view" id="view-dashboard">
+      <span class="eyebrow">Ringkasan</span>
+      <h2 class="page-title">Dashboard</h2>
+      <div class="profile-bar" id="profile-bar"></div>
+      <h3 class="section-title" id="dashboard-list-title">Pesanan Saya</h3>
+      <div id="dashboard-content"></div>
+    </section>
+
+    <!-- ---------- RIWAYAT ---------- -->
+    <section class="view" id="view-riwayat">
+      <span class="eyebrow">Histori</span>
+      <h2 class="page-title">Riwayat Transaksi</h2>
+      <div id="riwayat-content"></div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const PAGE_ROLE = "penumpang"; // WAJIB didefinisikan sebelum file-file di bawah dimuat
+</script>
+<!-- 4 file OOP, urutannya penting: abstraksi dulu (kelas dasar), baru
+     enkapsulasi, pewarisan (subclass-nya), lalu polimorfisme (pemakaian
+     method yang di-override). transgo-app.js dimuat PALING TERAKHIR
+     karena dia memakai semua class/fungsi di atas. -->
+<script src="oop-01-abstraksi.js"></script>
+<script src="oop-02-enkapsulasi.js"></script>
+<script src="oop-03-pewarisan.js"></script>
+<script src="oop-04-polimorfisme.js"></script>
+<script src="transgo-app.js"></script>
+<script>
+  initTransGo();
+</script>
+</body>
+</html>
