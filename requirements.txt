@@ -1,0 +1,18 @@
+# TransGo — requirements
+#
+# Proyek ini TIDAK memiliki dependensi paket eksternal.
+#
+# Bagian aplikasi web (HTML/CSS/JavaScript) berjalan sepenuhnya di
+# browser tanpa perlu instalasi apa pun.
+#
+# Bagian Python (oop_01_abstraksi.py, oop_02_enkapsulasi.py,
+# oop_03_pewarisan.py, oop_04_polimorfisme.py) hanya memakai modul
+# bawaan (standard library) Python:
+#   - uuid
+#   - datetime
+#
+# Satu-satunya kebutuhan adalah Python 3.7 atau lebih baru (opsional,
+# hanya dipakai untuk menjalankan local server via `python3 -m http.server`
+# atau untuk mencoba langsung kelas-kelas Python di atas).
+#
+# Tidak ada baris "pip install" yang diperlukan.
